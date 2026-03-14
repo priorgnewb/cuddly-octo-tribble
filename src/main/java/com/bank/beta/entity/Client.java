@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
