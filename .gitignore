@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets ###
+application-local.properties
+application-dev.properties
+application-prod.properties
+application-*.properties
+!application.properties
+*.key
+*.p12
+*.crt
+*.keystore
+*.jks
