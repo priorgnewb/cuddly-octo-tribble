@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "payments")
@@ -15,8 +18,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "loan_id", nullable = false)
@@ -31,8 +39,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentType type;
 
-    private BigDecimal principalPart; // часть в основной долг
-    private BigDecimal interestPart;  // часть в проценты
+    private BigDecimal principalPart;
+    private BigDecimal interestPart;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

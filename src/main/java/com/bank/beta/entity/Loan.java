@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "loans")
@@ -15,21 +18,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Loan {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @Column(nullable = false)
-    private BigDecimal amount; // сумма кредита
+    private BigDecimal amount;
 
     @Column(nullable = false)
-    private BigDecimal interestRate; // годовая процентная ставка
+    private BigDecimal interestRate;
 
     @Column(nullable = false)
-    private Integer termMonths; // срок в месяцах
+    private Integer termMonths;
 
     @Column(nullable = false)
     private LocalDate startDate;
@@ -37,10 +45,10 @@ public class Loan {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private BigDecimal monthlyPayment; // ежемесячный платеж
+    private BigDecimal monthlyPayment;
 
     @Column(nullable = false)
-    private BigDecimal remainingDebt; // оставшийся долг
+    private BigDecimal remainingDebt;
 
     @Enumerated(EnumType.STRING)
     private LoanStatus status;
