@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "payment_schedules")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment {
+public class PaymentSchedule {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -28,21 +28,24 @@ public class Payment {
     @JoinColumn(name = "loan_id", nullable = false)
     private Loan loan;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_schedule_id")
-    private PaymentSchedule paymentSchedule;  // Связь с графиком платежей
+    @Column(nullable = false)
+    private Integer paymentNumber;  // Номер платежа по порядку
 
     @Column(nullable = false)
-    private BigDecimal amount;                 // Сумма платежа
+    private LocalDate dueDate;      // Плановая дата платежа
 
     @Column(nullable = false)
-    private LocalDate paymentDate;             // Дата платежа
+    private BigDecimal plannedAmount;  // Плановая сумма
+
+    private BigDecimal actualAmount;   // Фактическая сумма (если оплатили)
+
+    private LocalDate paidDate;        // Дата фактической оплаты
+
+    private BigDecimal principalPart;  // Часть в основной долг
+    private BigDecimal interestPart;   // Часть в проценты
 
     @Enumerated(EnumType.STRING)
-    private PaymentType type;                  // SCHEDULED, EARLY
-
-    private BigDecimal principalPart;           // Часть в основной долг
-    private BigDecimal interestPart;            // Часть в проценты
+    private PaymentStatus status;      // Статус платежа
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -50,5 +53,8 @@ public class Payment {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        if (status == null) {
+            status = PaymentStatus.PENDING;
+        }
     }
 }
